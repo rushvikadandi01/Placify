@@ -1,56 +1,199 @@
-# Placement Copilot
+# Placify
 
-FastAPI backend foundation for a placement preparation assistant. The API supports student profiles and an AI placement chat endpoint, backed by SQLite.
+> Your AI-powered placement preparation companion.
 
-## Setup
+Placify is an AI-powered placement preparation platform designed to help students prepare for technical and aptitude-based placements through guided practice, interview preparation, progress tracking, and personalized study plans.
 
-From the project root, install dependencies into your active Python environment:
+## ✨ Features
 
-```powershell
-python -m pip install -r requirements.txt
-```
+### 🧠 AI Placement Assistant
 
-The local `.env` sets `DATABASE_URL` for SQLite. To enable LLM responses, copy `.env.example` to `.env` and set `AI_PROVIDER`, `AI_API_KEY`, and `AI_MODEL`. The provider currently uses an OpenAI-compatible chat completions API; set `AI_BASE_URL` when using a compatible provider with a different endpoint. Never put API keys in source files or commit `.env`. Without AI credentials, `/chat` still classifies requests and returns a setup notice.
+- AI-powered placement preparation assistant
+- Intent-based routing for different placement areas
+- Supports DSA, Aptitude, Interview, Core CS, HR, Project Interview, and Study Planning
 
-## Run
+### 💻 DSA Practice
 
-```powershell
-uvicorn backend.main:app --reload
-```
+Practice Data Structures and Algorithms questions by:
 
-The interactive API documentation is available at `http://127.0.0.1:8000/docs`.
+- Topic
+- Difficulty
+- Practice session
 
-## Test the API
+Supported topics include:
 
-Check the root endpoint:
+- Arrays
+- Strings
+- HashMap
+- HashSet
+- Linked List
+- Stack
+- Queue
+- Binary Tree
+- BST
+- Heap
+- Graph
+- Recursion
+- Sorting
+- Searching
+- Dynamic Programming
 
-```powershell
-Invoke-RestMethod http://127.0.0.1:8000/
-```
+The DSA module also provides AI-powered hints and explanations.
 
-Create a student profile:
+### 🎯 Aptitude Practice
 
-```powershell
-$body = @{
-    name = "Asha"
-    target_role = "Software Engineer"
-    programming_language = "Python"
-    experience_level = "Beginner"
-    hours_per_day = 2
-} | ConvertTo-Json
+Practice aptitude questions across:
 
-Invoke-RestMethod -Uri http://127.0.0.1:8000/student `
-    -Method Post -ContentType "application/json" -Body $body
-```
+**Quantitative Aptitude**
+- Percentages
+- Profit & Loss
+- Ratio & Proportion
+- Averages
+- Time & Work
+- Time, Speed & Distance
+- Simple Interest
+- Compound Interest
+- Number System
 
-The student endpoint returns a success message and the created `student_id`.
+**Logical Reasoning**
+- Number Series
+- Coding & Decoding
+- Blood Relations
+- Directions
+- Syllogisms
+- Seating Arrangement
 
-Send a placement-assistant request:
+**Verbal Ability**
+- Grammar
+- Vocabulary
+- Sentence Correction
+- Reading Comprehension
 
-```powershell
-$body = @{ message = "Explain HashMap in Java" } | ConvertTo-Json
-Invoke-RestMethod -Uri http://127.0.0.1:8000/chat `
-    -Method Post -ContentType "application/json" -Body $body
-```
+Questions are organized by Easy, Medium, and Hard difficulty levels.
 
-The response includes the assistant reply, detected intent, and an optional `conversation_id` echoed from the request.
+### 🎤 Interview Preparation
+
+Placify supports three interview modes:
+
+- Technical
+- HR
+- Project
+
+Technical interview topics include:
+
+- DSA
+- DBMS
+- Operating Systems
+- Computer Networks
+- OOP
+- Java
+- Python
+- AI/ML
+
+Interview evaluation includes:
+
+- Score
+- Strengths
+- Weaknesses
+- Feedback
+- Missing points
+- Suggested answer
+- Communication feedback
+- Technical feedback
+- Follow-up questions
+
+### 📊 Progress Tracking
+
+Placify stores training progress using SQLite.
+
+The platform tracks:
+
+- Total sessions
+- Questions attempted
+- Questions answered correctly
+- Overall accuracy
+- Interview scores
+- DSA sessions
+- Aptitude sessions
+- Interview sessions
+- Topic-wise performance
+
+### 📅 Personalized Study Plans
+
+Placify can generate personalized study plans using the student's existing progress.
+
+The study planner considers:
+
+- Strengths
+- Weaknesses
+- Available study hours
+- Number of preparation days
+- Selected focus areas
+- Placement goals
+
+The generated plan contains daily tasks, topics, activities, durations, and recommendations.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React
+- Vite
+- JavaScript
+- CSS
+
+### Backend
+
+- Python
+- FastAPI
+- Pydantic
+- SQLite
+
+### AI
+
+- OpenAI-compatible LLM API
+- Modular AI service architecture
+
+### Development
+
+- Git
+- GitHub
+- Uvicorn
+- npm
+
+---
+
+## 🏗️ Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │      Placify UI      │
+                    │     React + Vite     │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      FastAPI API     │
+                    └──────────┬───────────┘
+                               │
+             ┌─────────────────┼─────────────────┐
+             │                 │                 │
+             ▼                 ▼                 ▼
+       ┌───────────┐     ┌───────────┐     ┌────────────┐
+       │ DSA Agent │     │ Aptitude  │     │ Interview  │
+       │           │     │   Agent   │     │   Agent    │
+       └───────────┘     └───────────┘     └────────────┘
+             │                 │                 │
+             └─────────────────┼─────────────────┘
+                               ▼
+                    ┌──────────────────────┐
+                    │      AI Service      │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │        SQLite        │
+                    │  Progress Tracking   │
+                    └──────────────────────┘
