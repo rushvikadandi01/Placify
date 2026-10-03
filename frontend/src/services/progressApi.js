@@ -8,30 +8,79 @@ export class ProgressApiError extends Error {
   }
 }
 
-export async function loadProgressSummary(studentId) {
+async function fetchJson(url) {
   let response
+
   try {
-    response = await fetch(`${API_BASE}/progress/${encodeURIComponent(studentId)}/summary`)
+    response = await fetch(url)
   } catch {
-    throw new ProgressApiError('Could not connect to the backend.', 'unavailable')
+    throw new ProgressApiError(
+      'Could not connect to the backend.',
+      'unavailable'
+    )
   }
 
   if (response.status === 404) {
     throw new ProgressApiError('Student not found.', 'not-found')
   }
+
   if (!response.ok) {
-    throw new ProgressApiError('Something went wrong while loading progress.', 'request-failed')
+    throw new ProgressApiError(
+      'Something went wrong while loading progress.',
+      'request-failed'
+    )
   }
 
-  let data
   try {
-    data = await response.json()
+    return await response.json()
   } catch {
-    throw new ProgressApiError('The backend returned an unexpected progress response.', 'invalid-response')
+    throw new ProgressApiError(
+      'The backend returned an unexpected progress response.',
+      'invalid-response'
+    )
   }
+}
+
+export async function loadProgressSummary(studentId) {
+  const data = await fetchJson(
+    `${API_BASE}/progress/${encodeURIComponent(studentId)}/summary`
+  )
 
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    throw new ProgressApiError('The backend returned an unexpected progress response.', 'invalid-response')
+    throw new ProgressApiError(
+      'The backend returned an unexpected progress response.',
+      'invalid-response'
+    )
+  }
+
+  return data
+}
+
+export async function loadProgressRecords(studentId) {
+  const data = await fetchJson(
+    `${API_BASE}/progress/${encodeURIComponent(studentId)}`
+  )
+
+  if (!Array.isArray(data)) {
+    throw new ProgressApiError(
+      'The backend returned an unexpected progress response.',
+      'invalid-response'
+    )
+  }
+
+  return data
+}
+
+export async function loadTopicProgress(studentId) {
+  const data = await fetchJson(
+    `${API_BASE}/progress/${encodeURIComponent(studentId)}/topics`
+  )
+
+  if (!Array.isArray(data)) {
+    throw new ProgressApiError(
+      'The backend returned an unexpected progress response.',
+      'invalid-response'
+    )
   }
 
   return data

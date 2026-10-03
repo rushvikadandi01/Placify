@@ -3,6 +3,8 @@ import AptitudePage from './pages/AptitudePage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
 import DsaPracticePage from './pages/DsaPracticePage.jsx'
 import InterviewPage from './pages/InterviewPage.jsx'
+import ProgressPage from './pages/ProgressPage.jsx'
+import StudyPlanPage from './pages/StudyPlanPage.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import { navigationItems } from './components/navigationItems.js'
 import './styles/app.css'
@@ -15,6 +17,8 @@ function App() {
   const [dsaStudentId, setDsaStudentId] = useState('')
   const [aptitudeStudentId, setAptitudeStudentId] = useState('')
   const [interviewStudentId, setInterviewStudentId] = useState('')
+  const [progressStudentId, setProgressStudentId] = useState('')
+  const [studyPlanStudentId, setStudyPlanStudentId] = useState('')
   const activeItem = navigationItems.find((item) => item.id === activePage)
 
   function handleNavigate(page) {
@@ -27,6 +31,12 @@ function App() {
     if (page === 'interview') {
       setInterviewStudentId(localStorage.getItem(STUDENT_ID_KEY) ?? '')
     }
+if (page === 'progress') {
+  setProgressStudentId(localStorage.getItem(STUDENT_ID_KEY) ?? '')
+}
+if (page === 'study-plan') {
+  setStudyPlanStudentId(localStorage.getItem(STUDENT_ID_KEY) ?? '')
+}
     setActivePage(page)
     setVisitedPages((current) => (current.has(page) ? current : new Set([...current, page])))
   }
@@ -64,7 +74,23 @@ function App() {
             <InterviewPage onNavigate={handleNavigate} selectedStudentId={interviewStudentId} />
           </div>
         )}
-        {activePage !== 'dashboard' && activePage !== 'dsa' && activePage !== 'aptitude' && activePage !== 'interview' && (
+{visitedPages.has('progress') && (
+  <div hidden={activePage !== 'progress'}>
+    <ProgressPage studentId={progressStudentId} />
+  </div>
+)}
+{visitedPages.has('study-plan') && (
+  <div hidden={activePage !== 'study-plan'}>
+    <StudyPlanPage studentId={studyPlanStudentId} />
+  </div>
+)}
+        {activePage !== 'dashboard' &&
+  activePage !== 'dsa' &&
+  activePage !== 'aptitude' &&
+  activePage !== 'interview' &&
+  activePage !== 'progress' &&
+  activePage !== 'study-plan' &&
+   (
           <section className="placeholder-page">
             <div className="placeholder-mark">{activeItem?.shortLabel ?? 'PC'}</div>
             <p className="eyebrow">PLACIFY</p>
